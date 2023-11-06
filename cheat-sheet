@@ -1,0 +1,62 @@
+__________________________
+::. COMANDOS GENERALES .::
+
+- Iniciar Demonio Docker: docker -d
+
+- Mostrar Información de todo el Sistema: docker info
+_____________________________________________________
+
+
+________________
+::. IMAGENES .::
+
+- Crear una imagen a partir de un Dockerfile: docker build -t <image_name> .
+
+- Crear una imagen a partir de un Dockerfile sin caché: docker build -t <image_name> . –no-cache
+
+- Listar Imágenes: docker image ls
+
+- Eliminar una imagen: docker rmi <image_name>
+
+- Eliminar Todas las Imágenes en Desuso: docker image prune
+___________________________________________________________
+
+
+____________________
+::. CONTENEDORES .::
+
+- Crear y Ejecutar un Contenedor a partir de una Imagen, con un nombre personalizado: docker run --name <container_name> <image_name>
+
+- Ejecutar un Contenedor con y publicar un puerto(s) del contenedor al Host: docker run -p <host_port>:<container_port> <image_name>
+
+- Ejecutar un Contenedor en Background: docker run -d <image_name>
+
+- Iniciar o Detener un Contenedor existente: docker start|stop <container_name> (o <container-id>)
+
+- Eliminar un Contenedor Parado: docker rm <container_name>
+
+- Abrir un $hell dentro de un Contenedor en Ejecución: docker exec -it <container_name> bash
+
+- Obtener y Seguir los Registros de un Contenedor: docker logs -f <container_name>
+
+- Inspeccionar un Contenedor en Ejecución: docker inspect <container_name> (o <container_id>)
+
+- Listar los Contenedores actualmente en Ejecución: docker ps
+
+- Lista todos los Contenedores Docker (en Ejecución y Parados): docker ps --all
+
+- Ver Estadísticas de uso de Recursos: docker container stats
+_____________________________________________________________
+
+
+__________________
+::. DOCKER HUB .::
+
+- Login en Docker: docker login -u <username>
+
+- Publicar una imagen en Docker Hub: docker push <username>/<image_name>
+
+- Buscar una imagen en Hub: docker search <image_name>
+
+- Extraer imagen de un Docker Hub: docker pull <image_name>
+___________________________________________________________
