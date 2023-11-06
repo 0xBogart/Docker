@@ -1,12 +1,3 @@
-__________________________
-::. COMANDOS GENERALES .::
-
-- Iniciar Demonio Docker: docker -d
-
-- Mostrar Información de todo el Sistema: docker info
-_____________________________________________________
-
-
 ________________
 ::. IMAGENES .::
 
