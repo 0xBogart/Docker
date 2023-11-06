@@ -1,0 +1,71 @@
+:: CONSTRUIR UNA IMAGEN PERSONALIZADA CON UNA VERSIÓN ESPECÍFICA [2.4.52] A COMPILAR DE APACHE ::
+   ___________________________________________________________________________________________
+
+curl -sv https://archive.apache.org/dist/httpd/httpd-2.4.52.tar.gz -o httpd-2.4.52.tar.gz
+tar -xvf httpd-2.4.52.tar.gz
+
+
+Dockerfile
+__________
+# Imagen Base: Ubuntu
+FROM ubuntu:20.04
+
+# Instalar dependencias necesarias
+RUN apt-get update && \
+    apt-get install -y --allow-unauthenticated build-essential libapr1-dev libaprutil1-dev apt-utils libpcre3 libpcre32-3 libpcre3-dbg libpcre3-dev
+
+# Crea un directorio en el contenedor para copiar la fuente de Apache
+WORKDIR /tmp/apache-temp
+
+# Copia source de Apache al contenedor desde tu directorio local
+COPY ./httpd-2.4.52 /tmp/apache-temp
+
+# Compila Apache desde la fuente
+WORKDIR /tmp/apache-source
+RUN ./configure --prefix=/usr/local/apache2 && make && make install
+
+# Limpia Directorio Temporal
+WORKDIR /
+RUN rm -rf /tmp/apache-temp
+
+# Metadatos informativos
+EXPOSE 80/tcp
+
+# Iniciar Apache al iniciar el contenedor
+CMD ["/usr/local/apache2/bin/httpd", "-D", "FOREGROUND"]
+________________________________________________________
+
+
+sudo docker build -t my-apache:2.4.52 .
+docker run -d -p 8080:80 --name Apache-2.4.52 my-apache:2.4.52	## 8080: Host anfitrion, 80: Contenedor Docker.
+																                                ## --name: Nombre que le doy al contenedor.
+                                                
+____________________________________
+:: Averiguar la IP del contenedor ::
+....................................
+sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' Apache-2.4.52
+172.17.0.2
+
+curl -vk http://172.17.0.2:80
+* Expire in 0 ms for 6 (transfer 0x563a4c860110)
+*   Trying 172.17.0.2...
+* TCP_NODELAY set
+* Expire in 200 ms for 4 (transfer 0x563a4c860110)
+* Connected to 172.17.0.2 (172.17.0.2) port 80 (#0)
+> GET / HTTP/1.1
+> Host: 172.17.0.2
+> User-Agent: curl/7.64.0
+> Accept: */*
+> 
+< HTTP/1.1 200 OK
+< Date: Sun, 05 Nov 2023 21:51:55 GMT
+< Server: Apache/2.4.52 (Unix)
+< Last-Modified: Mon, 11 Jun 2007 18:53:14 GMT
+< ETag: "2d-432a5e4a73a80"
+< Accept-Ranges: bytes
+< Content-Length: 45
+< Content-Type: text/html
+< 
+<html><body><h1>It works!</h1></body></html>
+* Connection #0 to host 172.17.0.2 left intac
+_____________________________________________
